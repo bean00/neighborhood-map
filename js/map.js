@@ -16,7 +16,9 @@ function initMap() {
 
   markers = createMarkers(locations);
 
-  setMapBoundaries(map, markers);
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    setMapBoundaries(map, markers);
+  });
 }
 
 function createMap(center, zoom) {
