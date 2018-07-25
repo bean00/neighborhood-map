@@ -5,6 +5,85 @@ html, body {
     padding: 0;
 }
 
+h1 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.3em;
+}
+
+p {
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+}
+
+li > a, a:hover, a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+/* -----------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------- */
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+    padding: 10px;
+    background: #6d7fcc;
+}
+
+#sidebar .form-group {
+    margin: 0px;
+}
+
+#sidebar ul.components {
+    padding: 0px;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul li a {
+    color: #fff;
+    padding: 10px;
+    font-size: 1.0em;
+    display: block;
+    text-decoration: none;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+/* -----------------------------------------------
+    CONTENT STYLE
+----------------------------------------------- */
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
 #map {
     height: 100%;
 }
