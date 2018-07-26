@@ -92,6 +92,26 @@ function buildInfoWindowContent(marker) {
   return '<div>' + title + '</div>';
 }
 
-function openWindowFromList(locationId) {
-  openInfoWindow(markers[locationId]);
+function clickLocation(locationId) {
+  const marker = markers[locationId];
+
+  openInfoWindow(marker);
+
+  bounceMarker(marker);
+}
+
+function bounceMarker(marker) {
+  startAnimation(marker);
+
+  stopAnimation(marker);
+}
+
+function startAnimation(marker) {
+  marker.setAnimation(google.maps.Animation.BOUNCE);
+}
+
+function stopAnimation(marker) {
+  setTimeout(function() {
+    marker.setAnimation(null)
+  }, 1000);
 }

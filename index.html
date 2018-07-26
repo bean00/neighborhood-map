@@ -22,7 +22,7 @@
           <ul class="list-unstyled components" data-bind="foreach: locations">
             <li>
               <a data-bind="text: title, attr: {id: id},
-                click: function(data) { openWindowFromList(data.id) }"></a>
+                click: function(data) { clickLocation(data.id) }"></a>
             </li>
           </ul>
         </div>
