@@ -1,19 +1,71 @@
+const losAngeles = {lat: 34.052234, lng: -118.243685};
 const cupertino = {lat: 37.322998, lng: -122.032182};
+
+const mapCenter = losAngeles;
+const mapZoom = 19;
+
+// Wikipedia API search parameters
+const numberOfLocations = 5;
+const searchRadius = 10000;
+const centerLat = mapCenter.lat;
+const centerLng = mapCenter.lng;
+
+const wikipediaUrl = "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=" + centerLat + "%7C" + centerLng + "&ggsradius=" + searchRadius + "&ggslimit=" + numberOfLocations;
+const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+
 
 let map;
 let markers = [];
 let infoWindow;
-const mapCenter = cupertino;
-const mapZoom = 13;
 
 function initMap() {
-  map = createMap(mapCenter, mapZoom);
+  fetch(corsProxyUrl + wikipediaUrl)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(data) {
+      locations = parseRawWikiData(data);
 
-  markers = createMarkers(viewModel.locations());
+      return locations;
+    })
+    .then(function(locations) {
+      viewModel.setLocations(locations);
+    })
+    .then(function() {
+      map = createMap(mapCenter, mapZoom);
 
-  google.maps.event.addListenerOnce(map, 'idle', function() {
-    setMapBoundaries(map, markers);
-  });
+      markers = createMarkers(viewModel.locations());
+
+      google.maps.event.addListenerOnce(map, 'idle', function() {
+        setMapBoundaries(map, markers);
+      });
+    });
+}
+
+function parseRawWikiData(data) {
+  let locations = [];
+  const pages = data.query.pages;
+  let id = 0;
+
+  for (let key in pages) {
+    const page = pages[key];
+
+    let location = {
+      id: id,
+      pageId: page.pageid,
+      title: page.title,
+      location: {
+        lat: page.coordinates[0].lat,
+        lng: page.coordinates[0].lon,
+      },
+      description: page.description
+    };
+
+    locations.push(location);
+    id++;
+  }
+
+  return locations;
 }
 
 function createMap(center, zoom) {
