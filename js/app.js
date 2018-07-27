@@ -1,8 +1,17 @@
-$(document).ready(function () {
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
+$(document).ready(function() {
+  $('#sidebarCollapse').click(function(e) {
+    if ($('#sidebar').is(':hidden') == true) {
+      $(this).toggleClass("active");
+      $('#sidebar').removeClass("toggle");
+    } else {
+      $(this).removeClass("active");
+      $('#sidebar').addClass("toggle");
+    }
+
+    e.preventDefault();
+  });
 });
+
 
 function ViewModel() {
   let self = this;
@@ -29,6 +38,7 @@ function ViewModel() {
     }
   });
 }
+
 
 let viewModel = new ViewModel();
 

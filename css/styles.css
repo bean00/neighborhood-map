@@ -34,8 +34,8 @@ li > a, a:hover, a:focus {
 /* -----------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------- */
-#sidebar.active {
-    margin-left: -250px;
+.toggle {
+    display: block;
 }
 
 #sidebar {
@@ -44,12 +44,11 @@ li > a, a:hover, a:focus {
     min-height: 100vh;
     background: #7386D5;
     color: #fff;
-    transition: all 0.3s;
 }
 
 #sidebar .sidebar-header {
     padding: 10px;
-    background: #6d7fcc;
+    border-bottom: 1px solid #47748b;
 }
 
 #sidebar .form-group {
@@ -62,7 +61,6 @@ li > a, a:hover, a:focus {
 }
 
 #sidebar ul.components {
-    padding: 0px;
     border-bottom: 1px solid #47748b;
 }
 
@@ -79,8 +77,12 @@ li > a, a:hover, a:focus {
     background: #fff;
 }
 
+#sidebarCollapse {
+    display: none;
+}
+
 /* -----------------------------------------------
-    CONTENT STYLE
+CONTENT STYLE
 ----------------------------------------------- */
 #content {
     width: 100%;
@@ -91,4 +93,16 @@ li > a, a:hover, a:focus {
 
 #map {
     height: 100%;
+}
+
+/* -----------------------------------------------
+MEDIA QUERIES
+----------------------------------------------- */
+@media (max-width: 700px) {
+    .toggle {
+        display: none;
+    }
+    #sidebarCollapse {
+        display: block;
+    }
 }

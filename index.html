@@ -9,7 +9,7 @@
 
   <body>
     <div class="wrapper">
-      <nav id="sidebar">
+      <nav id="sidebar" class="toggle">
         <div class="sidebar-header">
           <h3>Points of Interest</h3>
           <div class="form-group">
@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <div>
+        <div class="sidebar-content">
           <ul class="list-unstyled components" data-bind="foreach: filteredLocations">
             <li>
               <a data-bind="text: title, attr: {id: id},
