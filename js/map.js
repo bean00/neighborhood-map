@@ -29,12 +29,12 @@ function initMap() {
       return locations;
     })
     .then(function(locations) {
-      viewModel.setLocations(locations);
+      viewModel.locations(locations);
     })
     .then(function() {
       map = createMap(mapCenter, mapZoom);
 
-      markers = createMarkers(viewModel.locations());
+      addMarkersToLocations(viewModel.locations());
 
       google.maps.event.addListenerOnce(map, 'idle', function() {
         setMapBoundaries(map, markers);
@@ -77,8 +77,7 @@ function createMap(center, zoom) {
   return map;
 }
 
-function createMarkers(locations) {
-  let markers = [];
+function addMarkersToLocations(locations) {
   infoWindow = new google.maps.InfoWindow();
 
   locations.forEach(function(location) {
@@ -89,10 +88,8 @@ function createMarkers(locations) {
       populateInfoWindow(this, infoWindow);
     });
 
-    markers.push(marker);
+    location.marker = marker;
   });
-
-  return markers;
 }
 
 function createMarker(map, location) {
@@ -145,7 +142,7 @@ function buildInfoWindowContent(marker) {
 }
 
 function clickLocation(locationId) {
-  const marker = markers[locationId];
+  const marker = viewModel.locations()[locationId].marker;
 
   openInfoWindow(marker);
 
@@ -165,5 +162,5 @@ function startAnimation(marker) {
 function stopAnimation(marker) {
   setTimeout(function() {
     marker.setAnimation(null)
-  }, 1000);
+  }, 700);
 }

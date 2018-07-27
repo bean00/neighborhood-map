@@ -14,12 +14,13 @@
           <h3>Points of Interest</h3>
           <div class="form-group">
             <label>Filter <i class="fa fa-filter"></i>:</label>
-            <input type="text" class="form-control" placeholder="Location name">
+            <input type="text" class="form-control" placeholder="Location name"
+              data-bind="textInput: query">
           </div>
         </div>
 
         <div>
-          <ul class="list-unstyled components" data-bind="foreach: locations">
+          <ul class="list-unstyled components" data-bind="foreach: filteredLocations">
             <li>
               <a data-bind="text: title, attr: {id: id},
                 click: function(data) { clickLocation(data.id) }"></a>
