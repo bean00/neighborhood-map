@@ -137,18 +137,25 @@ function populateInfoWindow(marker, infoWindow) {
 }
 
 function openInfoWindow(marker) {
+  const location = viewModel.locations()[marker.id];
+
   infoWindow.marker = marker;
 
-  const content = buildInfoWindowContent(marker);
+  const content = buildInfoWindowContent(location);
   infoWindow.setContent(content);
 
   infoWindow.open(map, marker);
 }
 
-function buildInfoWindowContent(marker) {
-  const title = marker.title;
+function buildInfoWindowContent(location) {
+  const title = location.title;
+  const wikipediaUrl = "http://en.wikipedia.org/?curid=" + location.pageId;
+  const wikipediaPage = '<a href="' + wikipediaUrl + '">Wikipedia Page</a>';
 
-  return '<div>' + title + '</div>';
+  const html = '<div>' + title + '</div>'
+    + '<div>' + wikipediaPage + '</div>';
+
+  return html;
 }
 
 function clickLocation(locationId) {
