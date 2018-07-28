@@ -10,8 +10,7 @@ const searchRadius = 10000;
 const centerLat = mapCenter.lat;
 const centerLng = mapCenter.lng;
 
-const wikipediaUrl = "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=" + centerLat + "%7C" + centerLng + "&ggsradius=" + searchRadius + "&ggslimit=" + numberOfLocations;
-const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+const wikipediaUrl = `https://en.wikipedia.org//w/api.php?action=query&format=json&origin=*&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=${centerLat}%7C${centerLng}&ggsradius=${searchRadius}&ggslimit=${numberOfLocations}`;
 
 
 let map;
@@ -19,36 +18,24 @@ let markers = [];
 let infoWindow;
 
 function initMap() {
-  fetch(corsProxyUrl + wikipediaUrl)
-    .then(function(response) {
+  fetch(wikipediaUrl)
+    .then(response => {
       return response.json();
     })
-    .then(function(data) {
+    .then(data => {
       locations = parseRawWikiData(data);
 
       return locations;
     })
-    .then(function(locations) {
-      viewModel.locations(locations);
-    })
-    .then(function() {
+    .then(locations => viewModel.locations(locations))
+    .then(() => {
       map = createMap(mapCenter, mapZoom);
 
       addMarkersToLocations(viewModel.locations());
 
-      google.maps.event.addListenerOnce(map, 'idle', function() {
-        setMapBoundaries(map, markers);
-      });
+      google.maps.event.addListenerOnce(map, 'idle', () => setMapBoundaries(map, markers));
     })
-    .catch(function(error) {
-      handleErrors(error);
-    });
-}
-
-function handleErrors(error) {
-  alert("An error occurred during program execution. Check the console for more details.");
-  console.log("Error object:");
-  console.dir(error);
+    .catch(error => errorHandler(error));
 }
 
 function parseRawWikiData(data) {
@@ -67,7 +54,7 @@ function parseRawWikiData(data) {
         lat: page.coordinates[0].lat,
         lng: page.coordinates[0].lon,
       },
-      description: page.description
+      description: page.description,
     };
 
     locations.push(location);
@@ -107,7 +94,8 @@ function createMarker(map, location) {
     id: location.id,
     map: map,
     position: location.location,
-    title: location.title
+    title: location.title,
+    gestureHandling: "cooperative",
   });
 
   return marker;
@@ -118,21 +106,17 @@ function setMapBoundaries(map, markers) {
 
   markers.forEach(function(marker) {
     bounds.extend(marker.position);
-  })
+  });
 
   map.fitBounds(bounds);
 }
 
 function populateInfoWindow(marker, infoWindow) {
-  const markersInfoWindowIsOpen = infoWindow.marker == marker;
-
-  if (!markersInfoWindowIsOpen) {
+  if (infoWindow.marker != marker) {
     openInfoWindow(marker);
 
     // Clear the marker property if the infoWindow is closed
-    infoWindow.addListener('closeclick', function() {
-      infoWindow.setMarker = null;
-    });
+    infoWindow.addListener('closeclick', () => infoWindow.setMarker = null);
   }
 }
 
@@ -148,40 +132,40 @@ function openInfoWindow(marker) {
 }
 
 function buildInfoWindowContent(location) {
-  const title = location.title;
-  const wikipediaUrl = "http://en.wikipedia.org/?curid=" + location.pageId;
-  const wikipediaPage = '<a href="' + wikipediaUrl + '">Wikipedia Page</a>';
+  const wikipediaUrl = `http://en.wikipedia.org/?curid=${location.pageId}`;
+  const wikipediaPage = `<a href="${wikipediaUrl}">Wikipedia Page</a>`;
 
-  const html = '<div>' + title + '</div>'
-    + '<div>' + wikipediaPage + '</div>';
+  const html = `
+      <div>${location.title}</div>
+      <div>${wikipediaPage}</div>`;
 
   return html;
 }
 
 function clickLocation(locationId) {
   const marker = viewModel.locations()[locationId].marker;
-
   openInfoWindow(marker);
-
   bounceMarker(marker);
 }
 
 function bounceMarker(marker) {
-  startAnimation(marker);
-
-  stopAnimation(marker);
-}
-
-function startAnimation(marker) {
+  // Start animation
   marker.setAnimation(google.maps.Animation.BOUNCE);
-}
 
-function stopAnimation(marker) {
+  // Stop animation after 700 ms
   setTimeout(function() {
     marker.setAnimation(null)
   }, 700);
 }
 
+// Handle errors in Maps API
 function mapsApiError() {
   alert("Error: Unable to load the Google map.");
+}
+
+// Error handler
+function errorHandler(error) {
+  alert("An error occurred during program execution. Check the console for more details.");
+  console.log("Error object:");
+  console.dir(error);
 }
