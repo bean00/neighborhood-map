@@ -94,7 +94,8 @@ function createMarker(map, location) {
     id: location.id,
     map: map,
     position: location.location,
-    title: location.title
+    title: location.title,
+    gestureHandling: "cooperative",
   });
 
   return marker;
@@ -105,21 +106,17 @@ function setMapBoundaries(map, markers) {
 
   markers.forEach(function(marker) {
     bounds.extend(marker.position);
-  })
+  });
 
   map.fitBounds(bounds);
 }
 
 function populateInfoWindow(marker, infoWindow) {
-  const markersInfoWindowIsOpen = infoWindow.marker == marker;
-
-  if (!markersInfoWindowIsOpen) {
+  if (infoWindow.marker != marker) {
     openInfoWindow(marker);
 
     // Clear the marker property if the infoWindow is closed
-    infoWindow.addListener('closeclick', () => {
-      infoWindow.setMarker = null;
-    });
+    infoWindow.addListener('closeclick', () => infoWindow.setMarker = null);
   }
 }
 
