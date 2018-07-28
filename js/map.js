@@ -10,8 +10,7 @@ const searchRadius = 10000;
 const centerLat = mapCenter.lat;
 const centerLng = mapCenter.lng;
 
-const wikipediaUrl = `https://en.wikipedia.org//w/api.php?action=query&format=json&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=${centerLat}%7C${centerLng}&ggsradius=${searchRadius}&ggslimit=${numberOfLocations}`;
-const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
+const wikipediaUrl = `https://en.wikipedia.org//w/api.php?action=query&format=json&origin=*&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=${centerLat}%7C${centerLng}&ggsradius=${searchRadius}&ggslimit=${numberOfLocations}`;
 
 
 let map;
@@ -19,7 +18,7 @@ let markers = [];
 let infoWindow;
 
 function initMap() {
-  fetch(corsProxyUrl + wikipediaUrl)
+  fetch(wikipediaUrl)
     .then(response => {
       return response.json();
     })
