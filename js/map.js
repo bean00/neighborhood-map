@@ -95,6 +95,7 @@ function addMarkersToLocations(locations) {
     // Open an infoWindow at each marker
     marker.addListener('click', function() {
       populateInfoWindow(this, infoWindow);
+      bounceMarker(this);
     });
 
     location.marker = marker;
