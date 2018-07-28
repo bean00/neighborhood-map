@@ -21,7 +21,7 @@ let infoWindow;
 function initMap() {
   fetch(corsProxyUrl + wikipediaUrl)
     .then(function(response) {
-      handleInitialErrors(response);
+      return response.json();
     })
     .then(function(data) {
       locations = parseRawWikiData(data);
@@ -41,24 +41,12 @@ function initMap() {
       });
     })
     .catch(function(error) {
-      handleOtherErrors(error);
+      handleErrors(error);
     });
 }
 
-function handleInitialErrors(response) {
-  if (response.ok) {
-    return response.json();
-  } else {
-    alert("An error occurred while accessing the API. Check the console for more details.");
-    console.log("Response object:");
-    console.dir(response);
-    console.log("Response status text:");
-    console.log(response.statusText);
-  }
-}
-
-function handleOtherErrors(error) {
-  alert("Some other error occurred during program execution. Check the console for more details.");
+function handleErrors(error) {
+  alert("An error occurred during program execution. Check the console for more details.");
   console.log("Error object:");
   console.dir(error);
 }
