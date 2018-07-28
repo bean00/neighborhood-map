@@ -21,7 +21,7 @@ let infoWindow;
 function initMap() {
   fetch(corsProxyUrl + wikipediaUrl)
     .then(function(response) {
-      return response.json();
+      handleInitialErrors(response);
     })
     .then(function(data) {
       locations = parseRawWikiData(data);
@@ -39,7 +39,28 @@ function initMap() {
       google.maps.event.addListenerOnce(map, 'idle', function() {
         setMapBoundaries(map, markers);
       });
+    })
+    .catch(function(error) {
+      handleOtherErrors(error);
     });
+}
+
+function handleInitialErrors(response) {
+  if (response.ok) {
+    return response.json();
+  } else {
+    alert("An error occurred while accessing the API. Check the console for more details.");
+    console.log("Response object:");
+    console.dir(response);
+    console.log("Response status text:");
+    console.log(response.statusText);
+  }
+}
+
+function handleOtherErrors(error) {
+  alert("Some other error occurred during program execution. Check the console for more details.");
+  console.log("Error object:");
+  console.dir(error);
 }
 
 function parseRawWikiData(data) {
@@ -163,4 +184,8 @@ function stopAnimation(marker) {
   setTimeout(function() {
     marker.setAnimation(null)
   }, 700);
+}
+
+function mapsApiError() {
+  alert("Error: Unable to load the Google map.");
 }
