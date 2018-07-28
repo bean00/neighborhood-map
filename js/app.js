@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('#sidebarCollapse').click(function(e) {
+  $('#sidebarCollapse').click(e => {
     if ($('#sidebar').is(':hidden') == true) {
       $(this).toggleClass("active");
       $('#sidebar').removeClass("toggle");
@@ -14,19 +14,25 @@ $(document).ready(function() {
 
 
 function ViewModel() {
-  let self = this;
+  const self = this;
 
   self.locations = ko.observableArray([]);
 
   self.query = ko.observable('');
 
-  self.filteredLocations = ko.computed(function() {
+  self.filteredLocations = ko.computed(() => {
     const filter = self.query().toLowerCase();
 
     if (!filter) {
       return self.locations();
     } else {
-      return ko.utils.arrayFilter(self.locations(), function(location) {
+      return ko.utils.arrayFilter(self.locations(), location => {
+
+        // If the infowindow is opened during search, close it
+        if (infoWindow) {
+          infoWindow.close();
+        }
+
         const title = location.title.toLowerCase();
 
         let result = title.includes(filter);

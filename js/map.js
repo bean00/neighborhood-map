@@ -10,7 +10,7 @@ const searchRadius = 10000;
 const centerLat = mapCenter.lat;
 const centerLng = mapCenter.lng;
 
-const wikipediaUrl = "https://en.wikipedia.org//w/api.php?action=query&format=json&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=" + centerLat + "%7C" + centerLng + "&ggsradius=" + searchRadius + "&ggslimit=" + numberOfLocations;
+const wikipediaUrl = `https://en.wikipedia.org//w/api.php?action=query&format=json&prop=coordinates%7Cpageimages%7Cdescription&generator=geosearch&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&ggscoord=${centerLat}%7C${centerLng}&ggsradius=${searchRadius}&ggslimit=${numberOfLocations}`;
 const corsProxyUrl = "https://cors-anywhere.herokuapp.com/";
 
 
@@ -20,27 +20,27 @@ let infoWindow;
 
 function initMap() {
   fetch(corsProxyUrl + wikipediaUrl)
-    .then(function(response) {
+    .then(response => {
       return response.json();
     })
-    .then(function(data) {
+    .then(data => {
       locations = parseRawWikiData(data);
 
       return locations;
     })
-    .then(function(locations) {
+    .then(locations => {
       viewModel.locations(locations);
     })
-    .then(function() {
+    .then(() => {
       map = createMap(mapCenter, mapZoom);
 
       addMarkersToLocations(viewModel.locations());
 
-      google.maps.event.addListenerOnce(map, 'idle', function() {
+      google.maps.event.addListenerOnce(map, 'idle', () => {
         setMapBoundaries(map, markers);
       });
     })
-    .catch(function(error) {
+    .catch(error => {
       handleErrors(error);
     });
 }
@@ -130,7 +130,7 @@ function populateInfoWindow(marker, infoWindow) {
     openInfoWindow(marker);
 
     // Clear the marker property if the infoWindow is closed
-    infoWindow.addListener('closeclick', function() {
+    infoWindow.addListener('closeclick', () => {
       infoWindow.setMarker = null;
     });
   }
@@ -149,11 +149,12 @@ function openInfoWindow(marker) {
 
 function buildInfoWindowContent(location) {
   const title = location.title;
-  const wikipediaUrl = "http://en.wikipedia.org/?curid=" + location.pageId;
-  const wikipediaPage = '<a href="' + wikipediaUrl + '">Wikipedia Page</a>';
+  const wikipediaUrl = `http://en.wikipedia.org/?curid=${location.pageId}`;
+  const wikipediaPage = `<a href="'${wikipediaUrl}'">Wikipedia Page</a>`;
 
-  const html = '<div>' + title + '</div>'
-    + '<div>' + wikipediaPage + '</div>';
+  const html = `
+      <div>${title}</div>
+      <div>${wikipediaPage}</div>`;
 
   return html;
 }
