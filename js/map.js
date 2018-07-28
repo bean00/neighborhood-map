@@ -27,27 +27,15 @@ function initMap() {
 
       return locations;
     })
-    .then(locations => {
-      viewModel.locations(locations);
-    })
+    .then(locations => viewModel.locations(locations))
     .then(() => {
       map = createMap(mapCenter, mapZoom);
 
       addMarkersToLocations(viewModel.locations());
 
-      google.maps.event.addListenerOnce(map, 'idle', () => {
-        setMapBoundaries(map, markers);
-      });
+      google.maps.event.addListenerOnce(map, 'idle', () => setMapBoundaries(map, markers));
     })
-    .catch(error => {
-      handleErrors(error);
-    });
-}
-
-function handleErrors(error) {
-  alert("An error occurred during program execution. Check the console for more details.");
-  console.log("Error object:");
-  console.dir(error);
+    .catch(error => errorHandler(error));
 }
 
 function parseRawWikiData(data) {
@@ -66,7 +54,7 @@ function parseRawWikiData(data) {
         lat: page.coordinates[0].lat,
         lng: page.coordinates[0].lon,
       },
-      description: page.description
+      description: page.description,
     };
 
     locations.push(location);
@@ -147,12 +135,11 @@ function openInfoWindow(marker) {
 }
 
 function buildInfoWindowContent(location) {
-  const title = location.title;
   const wikipediaUrl = `http://en.wikipedia.org/?curid=${location.pageId}`;
-  const wikipediaPage = `<a href="'${wikipediaUrl}'">Wikipedia Page</a>`;
+  const wikipediaPage = `<a href="${wikipediaUrl}">Wikipedia Page</a>`;
 
   const html = `
-      <div>${title}</div>
+      <div>${location.title}</div>
       <div>${wikipediaPage}</div>`;
 
   return html;
@@ -160,28 +147,28 @@ function buildInfoWindowContent(location) {
 
 function clickLocation(locationId) {
   const marker = viewModel.locations()[locationId].marker;
-
   openInfoWindow(marker);
-
   bounceMarker(marker);
 }
 
 function bounceMarker(marker) {
-  startAnimation(marker);
-
-  stopAnimation(marker);
-}
-
-function startAnimation(marker) {
+  // Start animation
   marker.setAnimation(google.maps.Animation.BOUNCE);
-}
 
-function stopAnimation(marker) {
+  // Stop animation after 700 ms
   setTimeout(function() {
     marker.setAnimation(null)
   }, 700);
 }
 
+// Handle errors in Maps API
 function mapsApiError() {
   alert("Error: Unable to load the Google map.");
+}
+
+// Error handler
+function errorHandler(error) {
+  alert("An error occurred during program execution. Check the console for more details.");
+  console.log("Error object:");
+  console.dir(error);
 }
